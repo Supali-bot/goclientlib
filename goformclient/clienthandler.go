@@ -71,6 +71,10 @@ func (c *httpClient) getResponseTimeout() time.Duration {
                 return c.responseTimeout
         }
 
+	if c.disableTimeouts{
+		return 0
+	}
+
         return defaultResponseTimeout
 }
 
@@ -79,6 +83,9 @@ func (c *httpClient) getConnectionTimeout() time.Duration {
                 return c.connectionTimeout
         }
 
+	if c.disableTimeouts{
+		return 0
+	}
         return defaultConnectionTimeout
 }
 
@@ -88,6 +95,7 @@ func (c *httpClient) getHttpClient() *http.Client{
 		return c.client
 	}
 	c.client = &http.Client{
+		Timeout:  c.getConnectionTimeout() + c.getResponseTimeout(),
                 Transport: &http.Transport{
                         MaxIdleConns:          c.getMaxIdleConnections(),
                         ResponseHeaderTimeout: c.getResponseTimeout(),
@@ -104,7 +112,7 @@ func (c *httpClient) getRequestHeaders(requestsHeaders http.Header) http.Header 
 
 	responseHeader := make(http.Header)
 	//Common Request header
-        for header, value := range c.Headers{
+        for header, value := range c.headers{
                 if len(value) >0{
                         responseHeader.Set(header, value[0])
                 }
