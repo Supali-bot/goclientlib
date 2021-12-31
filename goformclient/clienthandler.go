@@ -3,12 +3,20 @@ package goformclient
 import (
         "fmt"
         "errors"
+	"net"
         "net/http"
 	"encoding/json"
         "encoding/xml"
         "strings"
 	"bytes"
+	"time"
 )
+const (
+        defaultMaxIdleConnections = 5
+	defaultResponseTimeout = 5 * time.Second
+	defaultConnectionTimeout = 2 * time.Second
+)
+
 func (c *httpClient) getRequestBody(contentType string, body interface{})([]byte, error){
 	if body == nil{
 		return nil, nil
@@ -37,7 +45,7 @@ func (c *httpClient) do(method string, url string, headers http.Header, body int
                 return nil,  err
         }
 
-	client := http.Client{}
+	//client := http.Client{}
 	request, err := http.NewRequest(method, url, bytes.NewBuffer(requestBody))
 
         if err != nil{
@@ -45,7 +53,51 @@ func (c *httpClient) do(method string, url string, headers http.Header, body int
         }
 
 	request.Header = reqHeaders
+
+	client := c.getHttpClient()
         return client.Do(request)
+
+}
+func (c *httpClient) getMaxIdleConnections() int {
+        if c.maxIdleConns >0 {
+		return c.maxIdleConns
+	}
+
+	return defaultMaxIdleConnections
+
+}
+func (c *httpClient) getResponseTimeout() time.Duration {
+        if c.responseTimeout >0 {
+                return c.responseTimeout
+        }
+
+        return defaultResponseTimeout
+}
+
+func (c *httpClient) getConnectionTimeout() time.Duration {
+        if c.connectionTimeout >0 {
+                return c.connectionTimeout
+        }
+
+        return defaultConnectionTimeout
+}
+
+
+func (c *httpClient) getHttpClient() *http.Client{
+	if c.client != nil{
+		return c.client
+	}
+	c.client = &http.Client{
+                Transport: &http.Transport{
+                        MaxIdleConns:          c.getMaxIdleConnections(),
+                        ResponseHeaderTimeout: c.getResponseTimeout(),
+                        DialContext: (&net.Dialer{
+                                Timeout: c.getConnectionTimeout(),
+                        }).DialContext,
+                },
+        }
+
+	return c.client
 
 }
 func (c *httpClient) getRequestHeaders(requestsHeaders http.Header) http.Header {

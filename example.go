@@ -11,12 +11,17 @@ import (
 	"strings"
 	"unsafe"
 	"strconv"
+//	"time"
 )
+
 var (
 	getf3httpClient = getform3client()
 )
 func  getform3client() goformclient.HttpClient{
 	client := goformclient.NewClient()
+//	client.SetMaxIdleConns(20)
+//	client.SetConnectionTimeout(2 * time.Second)
+//	client.SetRequestTimeout(2 * time.Second)
 	commonHeader := make(http.Header)
 	commonHeader.Set("Authorization", "ABCD")
 	client.SetHeaders(commonHeader)
