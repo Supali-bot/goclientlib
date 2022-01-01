@@ -4,18 +4,14 @@ import (
 //	"net"
 	"net/http"
 	"fmt"
-	"time"
+//	"time"
 )
 
 type httpClient struct{
 
+	generator *clientGenerator
 	client *http.Client
 
-	headers http.Header
-	maxIdleConns int
-	connectionTimeout  time.Duration
-	responseTimeout  time.Duration
-	disableTimeouts bool
 }
 
 type Client interface {

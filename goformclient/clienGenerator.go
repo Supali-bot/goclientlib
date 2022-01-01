@@ -34,12 +34,7 @@ func NewGenerator() ClientGenerator {
 
 func (c *clientGenerator) Generate() Client {
 	client := httpClient {
-		headers:             c.headers,
-		maxIdleConns:	     c.maxIdleConns,
-		connectionTimeout:   c.connectionTimeout,
-		responseTimeout:     c.responseTimeout,
-		disableTimeouts:     c.disableTimeouts,
-
+		generator : c,
 	}
 
 	return &client
