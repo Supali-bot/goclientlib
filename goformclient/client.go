@@ -28,7 +28,7 @@ func (c *httpClient) Get(url string, headers http.Header)(*Response, error){
 	return c.do(http.MethodGet, url, headers, nil)
 }
 func (c *httpClient) Post(url string, headers http.Header, body interface{})(*Response, error){
-	fmt.Println("Body %v", body)
+	fmt.Printf("Body %v", body)
         return c.do(http.MethodPost, url, headers, body)
 }
 

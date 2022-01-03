@@ -15,14 +15,14 @@ import (
 const (
         defaultMaxIdleConnections = 5
 	defaultResponseTimeout = 5 * time.Second
-	defaultConnectionTimeout = 2 * time.Second
+	defaultConnectionTimeout = 1 * time.Second
 )
 
 func (c *httpClient) getRequestBody(contentType string, body interface{})([]byte, error){
 	if body == nil{
 		return nil, nil
 	}
-        fmt.Println("Content-type in getRequestBody %v", contentType)
+        fmt.Printf("Content-type in getRequestBody %v", contentType)
 	switch strings.ToLower(contentType){
 	case "application/json":
 		return json.Marshal(body)
