@@ -10,6 +10,7 @@ import (
         "strings"
 	"bytes"
 	"time"
+	"io/ioutil"
 )
 const (
         defaultMaxIdleConnections = 5
@@ -33,7 +34,7 @@ func (c *httpClient) getRequestBody(contentType string, body interface{})([]byte
 
 }
 
-func (c *httpClient) do(method string, url string, headers http.Header, body interface{})(*http.Response, error) {
+func (c *httpClient) do(method string, url string, headers http.Header, body interface{})(*Response, error) {
 
         fmt.Println("Inside Client handler")
 
@@ -55,7 +56,25 @@ func (c *httpClient) do(method string, url string, headers http.Header, body int
 	request.Header = reqHeaders
 
 	client := c.getHttpClient()
-        return client.Do(request)
+	response, err :=  client.Do(request)
+	if err != nil{
+		return nil, err
+	}
+	defer response.Body.Close()
+
+	reponseBody, err := ioutil.ReadAll(response.Body)
+	if err != nil{
+		return nil, err
+
+	}
+	finalResponse := Response{
+		status: response.Status,
+		statusCode: response.StatusCode,
+		headers: response.Header,
+		body: reponseBody,
+	}
+
+	return &finalResponse, nil
 
 }
 func (c *httpClient) getMaxIdleConnections() int {
@@ -91,20 +110,22 @@ func (c *httpClient) getConnectionTimeout() time.Duration {
 
 
 func (c *httpClient) getHttpClient() *http.Client{
-	if c.client != nil{
-		return c.client
-	}
-	c.client = &http.Client{
-		Timeout:  c.getConnectionTimeout() + c.getResponseTimeout(),
-                Transport: &http.Transport{
-                        MaxIdleConns:          c.getMaxIdleConnections(),
-                        ResponseHeaderTimeout: c.getResponseTimeout(),
-                        DialContext: (&net.Dialer{
-                                Timeout: c.getConnectionTimeout(),
-                        }).DialContext,
-                },
-        }
 
+	c.clientOnce.Do(func() {
+		fmt.Println("=======================================")
+		fmt.Println("CREATING NEW CLIENT")
+		fmt.Println("=======================================")
+		c.client = &http.Client{
+			Timeout:  c.getConnectionTimeout() + c.getResponseTimeout(),
+	                Transport: &http.Transport{
+	                        MaxIdleConns:          c.getMaxIdleConnections(),
+	                        ResponseHeaderTimeout: c.getResponseTimeout(),
+	                        DialContext: (&net.Dialer{
+	                                Timeout: c.getConnectionTimeout(),
+	                        }).DialContext,
+	                },
+	        }
+        })
 	return c.client
 
 }

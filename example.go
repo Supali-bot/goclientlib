@@ -2,7 +2,7 @@ package  main
 
 import (
 	"fmt"
-	"io/ioutil"
+//	"io/ioutil"
 	"encoding/json"
 	"github.com/supalik/fthreeclient/goformclient"
 	"github.com/google/uuid"
@@ -87,12 +87,15 @@ func createData(reqData models.Data){
         if err !=nil{
                 panic(err)
         }
-        fmt.Printf("Response Code: %d \n", resp.StatusCode)
-        bytes, err := ioutil.ReadAll(resp.Body)
-        if err != nil{
-                panic(err)
-        }
-        fmt.Printf("Response Data: %s", string(bytes))
+	fmt.Println(resp.Status())
+	fmt.Println(resp.StatusCode())
+	fmt.Println(resp.String())
+       // fmt.Printf("Response Code: %d \n", resp.StatusCode)
+       // bytes, err := ioutil.ReadAll(resp.Body)
+       // if err != nil{
+       //         panic(err)
+       // }
+       // fmt.Printf("Response Data: %s", string(bytes))
 }
 
 func getData(){
@@ -102,10 +105,10 @@ func getData(){
 		panic(err)
 	}
 	fmt.Printf("Get Response Code: %d \n", resp.StatusCode)
-	bytes, err := ioutil.ReadAll(resp.Body)
-	if err != nil{
-		panic(err)
-	}
+	bytes := resp.Bytes()
+//	if err != nil{
+//		panic(err)
+//	}
 	fmt.Printf("\nGet Response Data: %s", string(bytes))
 }
 
