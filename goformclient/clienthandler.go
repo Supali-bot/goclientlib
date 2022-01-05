@@ -22,7 +22,6 @@ func (c *httpClient) getRequestBody(contentType string, body interface{})([]byte
 	if body == nil{
 		return nil, nil
 	}
-        fmt.Printf("Content-type in getRequestBody %v", contentType)
 	switch strings.ToLower(contentType){
 	case "application/json":
 		return json.Marshal(body)
@@ -36,7 +35,6 @@ func (c *httpClient) getRequestBody(contentType string, body interface{})([]byte
 
 func (c *httpClient) do(method string, url string, headers http.Header, body interface{})(*Response, error) {
 
-        fmt.Println("Inside Client handler")
 
 	reqHeaders := c.getRequestHeaders(headers)
 
@@ -46,7 +44,6 @@ func (c *httpClient) do(method string, url string, headers http.Header, body int
                 return nil,  err
         }
 
-	//client := http.Client{}
 	request, err := http.NewRequest(method, url, bytes.NewBuffer(requestBody))
 
         if err != nil{

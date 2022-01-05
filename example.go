@@ -2,7 +2,6 @@ package  main
 
 import (
 	"fmt"
-//	"io/ioutil"
 	"encoding/json"
 	"github.com/supalik/fthreeclient/goformclient"
 	"github.com/google/uuid"
@@ -11,7 +10,6 @@ import (
 	"strings"
 	"unsafe"
 	"strconv"
-	//"time"
 )
 
 var (
@@ -22,19 +20,8 @@ func  getform3client() goformclient.Client{
 		DisableTimeouts(true).
 		SetMaxIdleConns(20).
 		Generate()
-//	generator := goformclient.NewGenerator()
-//	generator.DisableTimeouts(true)
-//	generator.SetMaxIdleConns(20)
-	//client := goformclient.NewClient()
-//	client.DisableTimeouts(true)
-//	client.SetMaxIdleConns(20)
-//	client.SetConnectionTimeout(2 * time.Second)
-//	client.SetRequestTimeout(2 * time.Second)
-        //client := generator.Generate()
 	commonHeader := make(http.Header)
 	commonHeader.Set("Authorization", "ABCD")
-	//client.SetHeaders(commonHeader)
-
 	return client
 }
 
@@ -90,12 +77,6 @@ func createData(reqData models.Data){
 	fmt.Println(resp.Status())
 	fmt.Println(resp.StatusCode())
 	fmt.Println(resp.String())
-       // fmt.Printf("Response Code: %d \n", resp.StatusCode)
-       // bytes, err := ioutil.ReadAll(resp.Body)
-       // if err != nil{
-       //         panic(err)
-       // }
-       // fmt.Printf("Response Data: %s", string(bytes))
 }
 
 func getData(){
@@ -104,11 +85,8 @@ func getData(){
 	if err !=nil{
 		panic(err)
 	}
-	fmt.Printf("Get Response Code: %d \n", resp.StatusCode)
+	fmt.Printf("Get Response Code: %d \n", resp.StatusCode())
 	bytes := resp.Bytes()
-//	if err != nil{
-//		panic(err)
-//	}
 	fmt.Printf("\nGet Response Data: %s", string(bytes))
 }
 
@@ -120,6 +98,6 @@ func deleteData(uuid string, v int){
         if err !=nil{
                 panic(err)
         }
-        fmt.Printf("\nDelete response Code: %d \n", resp.StatusCode)
+        fmt.Printf("\nDelete response Code: %d \n", resp.StatusCode())
 
 }
