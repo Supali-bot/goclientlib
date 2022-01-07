@@ -131,3 +131,14 @@ func TestGetMaxIdleConnections(t *testing.T){
 	}
 
 }
+func TestCustomClient(t *testing.T){
+	customclient := http.Client{}
+	client := NewGenerator().
+		SetHttpClient(&customclient).
+                Generate()
+	_, err := client.Get("http://localhost:8080/v1/organisation/accounts/ad27e265-9605-4b4b-a0e5-3003ea9cc4dc", nil)
+        if err !=nil{
+		t.Error("Failed with Customclient: ", err)
+        }
+
+}

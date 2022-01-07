@@ -8,12 +8,12 @@ import (
 
 type clientGenerator struct {
 
-	 headers http.Header
-	 maxIdleConns int
+	 headers            http.Header
+	 maxIdleConns       int
          connectionTimeout  time.Duration
-         responseTimeout  time.Duration
-         disableTimeouts bool
-
+         responseTimeout    time.Duration
+         disableTimeouts    bool
+	 client             *http.Client
 }
 
 type ClientGenerator  interface {
@@ -24,7 +24,9 @@ type ClientGenerator  interface {
         SetConnectionTimeout(timeout time.Duration) ClientGenerator
         SetRequestTimeout(timeout time.Duration) ClientGenerator
         SetMaxIdleConns(i int)ClientGenerator
+	SetHttpClient(c *http.Client)ClientGenerator
 	Generate() Client
+
 }
 
 func NewGenerator() ClientGenerator {
@@ -59,9 +61,13 @@ func (c *clientGenerator) SetMaxIdleConns(i int) ClientGenerator{
      c.maxIdleConns = i
      return c
 }
-func (c *clientGenerator)DisableTimeouts(disable bool) ClientGenerator {
+func (c *clientGenerator) DisableTimeouts(disable bool) ClientGenerator {
 
      c.disableTimeouts = disable
      return c
 }
+func (c *clientGenerator) SetHttpClient(client *http.Client)ClientGenerator {
 
+     c.client = client
+     return c
+}

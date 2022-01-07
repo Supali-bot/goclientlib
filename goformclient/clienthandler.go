@@ -109,6 +109,10 @@ func (c *httpClient) getConnectionTimeout() time.Duration {
 func (c *httpClient) getHttpClient() *http.Client{
 
 	c.clientOnce.Do(func() {
+		if c.generator.client != nil{
+			c.client = c.generator.client
+			return
+		}
 		fmt.Println("=======================================")
 		fmt.Println("CREATING NEW CLIENT")
 		fmt.Println("=======================================")

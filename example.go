@@ -14,7 +14,17 @@ import (
 
 var (
 	getf3httpClient = getform3client()
+	getCustomClient = getform3CustomClient()
 )
+func getform3CustomClient() goformclient.Client{
+	customClient := http.Client{}
+	client := goformclient.NewGenerator().
+		SetHttpClient(&customClient).
+                Generate()
+	return client
+
+
+}
 func  getform3client() goformclient.Client{
 	client := goformclient.NewGenerator().
 		DisableTimeouts(true).
@@ -26,6 +36,7 @@ func  getform3client() goformclient.Client{
 }
 
 func main(){
+	getDatawithCustomClient()
 	getData()
 	uuidWithHyphen := uuid.New()
         uuid := strings.Replace(uuidWithHyphen.String(), "-", "", -1)
@@ -79,6 +90,17 @@ func createData(reqData models.Data){
 	fmt.Println(resp.String())
 }
 
+func getDatawithCustomClient(){
+
+	fmt.Printf("Get using custom client")
+	resp, err := getCustomClient.Get("http://localhost:8080/v1/organisation/accounts/ad27e265-9605-4b4b-a0e5-3003ea9cc4dc", nil)
+	if err !=nil{
+		panic(err)
+	}
+	fmt.Printf("Get Response Code: %d \n", resp.StatusCode())
+	bytes := resp.Bytes()
+	fmt.Printf("\nGet Response Data: %s", string(bytes))
+}
 func getData(){
 
 	resp, err := getf3httpClient.Get("http://localhost:8080/v1/organisation/accounts/ad27e265-9605-4b4b-a0e5-3003ea9cc4dc", nil)
