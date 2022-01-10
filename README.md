@@ -7,7 +7,7 @@ module github.com/supalik/fthreeclient
 require github.com/google/uuid v1.3.0
 ```
 ## Usage
-import the corresponding HTTP package  to use the library, refer the examples.go
+import the corresponding HTTP package  to use the library, refer the example.go
 ```go
 import "github.com/supalik/fthreeclient"
 ```
